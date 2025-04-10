@@ -1,0 +1,182 @@
+  
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Registration Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e4e9ee;
+      padding: 20px;
+    }
+    table {
+      width: 80%;
+      margin: auto;
+      background-color: rgb(232, 236, 237);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(91, 92, 75, 0.1);
+    }
+    td {
+      padding: 8px;
+    }
+    input[type="text"], input[type="number"], input[type="date"], input[type="tel"], input[type="email"], select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    input[type="submit"], input[type="reset"] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    input[type="submit"]:hover, input[type="reset"]:hover {
+      background-color: #45a049;
+    }
+    .checkbox-group input {
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<form id="registrationForm" onsubmit="return confirmSubmission()">
+  <table>
+    <tr>
+      <td colspan="2" style="text-align: center;"><h2>BODH REGISTRATION FORM</h2></td>
+    </tr>
+    <tr>
+      <td>STUDENT NAME:</td>
+      <td><input type="text" name="txtFullName" id="txtFullName" required /></td>
+    </tr>
+    <tr>
+      <td>STUDENT ROLL NO:</td>
+      <td><input type="text" name="rollNo" required pattern="\w+" title="Only letters and numbers are allowed" /></td>
+    </tr>
+    <tr>
+      <td>COLLEGE NAME:</td>
+      <td><input type="text" name="txtCollegeName" required /></td>
+    </tr>
+    <tr>
+      <td>YEAR:</td>
+      <td>
+        <select id="year" name="year" required>
+          <option value="">--Select--</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>GENDER:</td>
+      <td>
+        <input type="radio" name="rdbtnGender" value="M" required /> Male
+        <input type="radio" name="rdbtnGender" value="F" required /> Female
+      </td>
+    </tr>
+    <tr>
+      <td>DATE OF BIRTH:</td>
+      <td><input type="date" id="dob" name="dob" min="1900-01-01" max="2050-01-01" required onchange="validateAge()" /></td>
+    </tr>
+    <tr>
+      <td>MOBILE NO:</td>
+      <td><input type="tel" name="mobile" pattern="\d{10}" title="Enter a valid 10-digit mobile number" required /></td>
+    </tr>
+    <tr>
+      <td>EMAIL:</td>
+      <td><input type="email" name="email" required /></td>
+    </tr>
+    <tr>
+      <td>CASTE:</td>
+      <td>
+        <select name="caste" required>
+          <option value="">SELECT</option>
+          <option value="OC">OC</option>
+          <option value="BC">BC</option>
+          <option value="SC">SC</option>
+          <option value="ST">ST</option>
+        </select>
+      </td>
+    </tr>
+    <tr id="rankRow">
+      <td>ECET/EAMCET RANK:</td>
+      <td><input type="number" name="rank" id="rank" /></td>
+    </tr>
+    <tr>
+      <td>SELECT DEPT:</td>
+      <td class="checkbox-group">
+        <input type="checkbox" name="chkboxDept[]" value="CSE"> CSE
+        <input type="checkbox" name="chkboxDept[]" value="ECE"> ECE
+        <input type="checkbox" name="chkboxDept[]" value="MEC"> MEC
+        <input type="checkbox" name="chkboxDept[]" value="CIVIL"> CIVIL
+        <input type="checkbox" name="chkboxDept[]" value="EEE"> EEE
+        <input type="checkbox" name="chkboxDept[]" value="IT"> IT
+      </td>
+    </tr>
+    <tr>
+      <td>ADDRESS:</td>
+      <td><textarea name="txtAddr" required></textarea></td>
+    </tr>
+    <tr>
+      <td>PINCODE:</td>
+      <td><input type="text" name="pincode" pattern="\d{6}" title="Please enter a valid 6-digit pincode" required /></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <input type="submit" value="Register" />
+        <input type="reset" value="Reset" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+<script>
+  // Validate age (must be 18+)
+  function validateAge() {
+    const dobInput = document.getElementById("dob");
+    const dob = new Date(dobInput.value);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+
+    if (age < 18) {
+      alert("You must be at least 18 years old.");
+      dobInput.value = "";
+    }
+  }
+
+  // Confirm form submission
+  function confirmSubmission() {
+    return confirm("Are you sure you want to submit the registration?");
+  }
+
+  // Show/hide ECET/EAMCET rank based on checkbox selection
+  const checkboxes = document.querySelectorAll('input[type="checkbox"][name="chkboxDept[]"]');
+  const rankRow = document.getElementById("rankRow");
+
+  function toggleRankVisibility() {
+    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+    rankRow.style.display = anyChecked ? "table-row" : "none";
+  }
+
+  checkboxes.forEach(cb => cb.addEventListener("change", toggleRankVisibility));
+
+  // Hide rank row on load
+  window.onload = toggleRankVisibility;
+</script>
+
+</body>
+</html>
